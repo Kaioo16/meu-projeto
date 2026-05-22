@@ -18,6 +18,7 @@ export default function Login({ onLogin }) {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
+        <h1>Meu App</h1>
         <h2>Login</h2>
 
         <form onSubmit={handleSubmit} style={styles.form}>
