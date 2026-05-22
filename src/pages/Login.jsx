@@ -8,23 +8,24 @@ export default function Login({ onLogin }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (email && senha) {
-      localStorage.setItem("user", email);
-      onLogin(email);
-    } else {
-      alert("Preencha os campos");
+    if (!email || !senha) {
+      alert("Preencha todos os campos");
+      return;
     }
+
+    localStorage.setItem("user", email);
+    onLogin(email);
   }
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1>Meu Projeto</h1>
-        <h2>conecte-se</h2>
+        <h1>Meu App</h1>
+        <h2>Conecte-se</h2>
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
-            placeholder="Email"
+            placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={styles.input}
@@ -32,20 +33,23 @@ export default function Login({ onLogin }) {
 
           <input
             type={mostrarSenha ? "text" : "password"}
-           <button
-  type="button"
-  onClick={() => setMostrarSenha(!mostrarSenha)}
-  style={styles.button}
->
-  {mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
-</button>
             placeholder="Senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             style={styles.input}
           />
 
-          <button style={styles.button}>Entrar</button>
+          <button
+            type="button"
+            onClick={() => setMostrarSenha(!mostrarSenha)}
+            style={styles.button}
+          >
+            {mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+          </button>
+
+          <button type="submit" style={styles.button}>
+            Entrar
+          </button>
         </form>
       </div>
     </div>
@@ -61,19 +65,19 @@ const styles = {
     background: "#0f172a",
   },
   card: {
-  background: "rgba(255,255,255,0.1)",
-  backdropFilter: "blur(15px)",
-  padding: 30,
-  borderRadius: 20,
-  width: 320,
-  color: "#fff",
-  textAlign: "center",
-  boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-},
+    background: "rgba(255,255,255,0.1)",
+    backdropFilter: "blur(15px)",
+    padding: 30,
+    borderRadius: 20,
+    width: 320,
+    color: "#fff",
+    textAlign: "center",
+  },
   form: {
     display: "flex",
     flexDirection: "column",
     gap: 10,
+    marginTop: 10,
   },
   input: {
     padding: 10,
@@ -81,11 +85,11 @@ const styles = {
     border: "none",
   },
   button: {
-  padding: 12,
-  borderRadius: 8,
-  border: "none",
-  background: "#2563eb",
-  color: "#fff",
-  fontSize: 16,
-  cursor: "pointer",
-},
+    padding: 12,
+    borderRadius: 8,
+    border: "none",
+    background: "#2563eb",
+    color: "#fff",
+    cursor: "pointer",
+  },
+};
