@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,7 +31,14 @@ export default function Login({ onLogin }) {
           />
 
           <input
-            type="password"
+            type={mostrarSenha ? "text" : "password"}
+           <button
+  type="button"
+  onClick={() => setMostrarSenha(!mostrarSenha)}
+  style={styles.button}
+>
+  {mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+</button>
             placeholder="Senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
