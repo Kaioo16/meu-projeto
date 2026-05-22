@@ -19,7 +19,7 @@ export default function Login({ onLogin }) {
     <div style={styles.container}>
       <div style={styles.card}>
         <h1>Meu Projeto</h1>
-        <h2>Login</h2>
+        <h2>conecte-se</h2>
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
