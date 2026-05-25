@@ -16,6 +16,8 @@ export default function Dashboard({ user }) {
   const [tasks, setTasks] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [newText, setNewText] = useState("");
+  const [filter, setFilter] = useState("todas");
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -48,10 +50,11 @@ export default function Dashboard({ user }) {
     await addDoc(collection(db, "tasks"), {
       texto: task,
       userId: user.uid,
-      concluida: false
+      concluida: false,
+      criadaEm: new Date().toLocaleString()
     });
 
-    alert("Tarefa salva!");
+    setTask("");
     window.location.reload();
   };
 
@@ -64,8 +67,6 @@ export default function Dashboard({ user }) {
     await updateDoc(doc(db, "tasks", id), {
       texto: newText
     });
-
-    alert("Tarefa editada!");
     window.location.reload();
   };
 
@@ -73,14 +74,27 @@ export default function Dashboard({ user }) {
     await updateDoc(doc(db, "tasks", item.id), {
       concluida: !item.concluida
     });
-
     window.location.reload();
   };
 
+  const filteredTasks = tasks.filter((item) => {
+    if (filter === "pendentes") return !item.concluida;
+    if (filter === "concluidas") return item.concluida;
+    return true;
+  });
+
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <div className="bg-white p-8 rounded-2xl shadow max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-600 mb-4">
+    <div className={darkMode ? "min-h-screen bg-black text-white p-10" : "min-h-screen bg-gray-100 p-10"}>
+      <div className={darkMode
+  ? "bg-gray-800 text-white p-8 rounded-2xl shadow max-w-xl mx-auto"
+  : "bg-white p-8 rounded-2xl shadow max-w-xl mx-auto"}>
+      <button
+  onClick={() => setDarkMode(!darkMode)}
+  className="mb-4 bg-gray-500 text-white px-4 py-2 rounded"
+>
+  {darkMode ? "☀️ Claro" : "🌙 Escuro"}
+</button> 
+       <h1 className="text-3xl font-bold text-blue-600 mb-4">
           Kaio App
         </h1>
 
@@ -94,7 +108,8 @@ export default function Dashboard({ user }) {
           value={task}
           onChange={(e) => setTask(e.target.value)}
           className="border p-2 w-full mb-3 rounded"
-        />
+         className={darkMode ? "border p-2 w-full mb-3 rounded text-black" : "border p-2 w-full mb-3 rounded"}
+          />
 
         <button
           onClick={saveTask}
@@ -103,11 +118,37 @@ export default function Dashboard({ user }) {
           Salvar tarefa
         </button>
 
-        <div className="mb-4">
-          <h2 className="font-bold mb-2">Minhas tarefas:</h2>
+        <h2 className="font-bold mb-2">Minhas tarefas:</h2>
 
-          {tasks.map((item) => (
-            <div key={item.id} className="flex justify-between mb-2">
+        <div className="mb-4">
+          <button
+            onClick={() => setFilter("todas")}
+            className="mr-2 bg-gray-300 px-2 rounded"
+          >
+            Todas
+          </button>
+
+          <button
+            onClick={() => setFilter("pendentes")}
+            className="mr-2 bg-yellow-300 px-2 rounded"
+          >
+            Pendentes
+          </button>
+
+          <button
+            onClick={() => setFilter("concluidas")}
+            className="bg-green-300 px-2 rounded"
+          >
+            Concluídas
+          </button>
+        </div>
+
+        <div className="mb-4">
+          {filteredTasks.map((item) => (
+            <div
+              key={item.id}
+              className="flex justify-between items-center mb-3"
+            >
               {editingId === item.id ? (
                 <input
                   value={newText}
@@ -115,12 +156,17 @@ export default function Dashboard({ user }) {
                   className="border p-1 rounded"
                 />
               ) : (
-                <p
+                <div
                   onClick={() => toggleTask(item)}
                   className={item.concluida ? "line-through cursor-pointer" : "cursor-pointer"}
                 >
-                  {item.concluida ? "☑" : "☐"} {item.texto}
-                </p>
+                  <p>
+                    {item.concluida ? "☑" : "☐"} {item.texto}
+                  </p>
+                  <small className="text-gray-500">
+                    {item.criadaEm}
+                  </small>
+                </div>
               )}
 
               <div>
